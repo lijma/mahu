@@ -1,0 +1,11 @@
+{
+  "name": "mahu",
+  "version": "0.1.0",
+  "description": "Agent skill router for context, prototypes, presentations, tests, and feedback loops.",
+  "skills": [
+    {
+      "name": "mahu",
+      "path": "SKILL.md"
+    }
+  ]
+}
