@@ -8,7 +8,7 @@ from pathlib import Path
 from mahu.registry import list_subskills
 
 
-REQUIRED_ADAPTERS = ("codex", "workbuddy", "copilot", "opencode")
+REQUIRED_ADAPTERS = ("codex", "claude", "workbuddy", "copilot", "opencode", "trae")
 CANONICAL_SKILL_PATH = Path("skills") / "mahu"
 
 
@@ -73,7 +73,7 @@ def _required_files(kind: str) -> list[str]:
     files.extend(f"{prefix}adapters/{adapter}.md" for adapter in REQUIRED_ADAPTERS)
     files.append(f"{prefix}assets/mahu.png")
     if kind == "package":
-        files = ["README.md", "pyproject.toml"] + files
+        files = ["README.md", "pyproject.toml", ".claude-plugin/plugin.json"] + files
     return files
 
 

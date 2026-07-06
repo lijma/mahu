@@ -1,4 +1,4 @@
-"""Mahu agent skill package."""
+"""Mahu /mahu entrypoint package."""
 
 from importlib.metadata import PackageNotFoundError, version
 

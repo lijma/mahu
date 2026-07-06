@@ -10,7 +10,7 @@ def test_cli_help_and_route():
     runner = CliRunner()
     result = runner.invoke(main, ["--help"], catch_exceptions=False)
     assert result.exit_code == 0
-    assert "agent skill package" in result.output
+    assert "/mahu entrypoint" in result.output
     assert "route" not in result.output
 
 
@@ -91,7 +91,7 @@ def test_cli_enable_success_and_failure(tmp_path):
         catch_exceptions=False,
     )
     assert result.exit_code == 0
-    assert "Mahu enabled for workbuddy" in result.output
+    assert "Mahu installed for workbuddy" in result.output
 
     broken_root = tmp_path / "broken"
     broken_root.mkdir()

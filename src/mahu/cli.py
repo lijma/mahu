@@ -16,19 +16,19 @@ from mahu.manifest import validate_manifest
 @click.group()
 @click.version_option(__version__, prog_name="mahu")
 def main():
-    """Mahu — agent skill package for daily AI work."""
+    """Mahu — /mahu entrypoint for agent-assisted daily work."""
 
 
 @main.command()
 @click.option("--root", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".", help="Mahu repo root.")
 @click.option("--json-output", is_flag=True, default=False, help="Output structured JSON.")
 def validate(root: Path, json_output: bool):
-    """Validate Mahu skill repository structure."""
+    """Validate Mahu repository structure."""
     report = validate_manifest(root)
     if json_output:
         click.echo(json.dumps(report.to_dict(), indent=2, ensure_ascii=False))
     elif report.valid:
-        click.secho("✓ Mahu skill manifest is valid", fg="green", bold=True)
+        click.secho("✓ Mahu repository manifest is valid", fg="green", bold=True)
     else:
         for error in report.errors:
             click.secho(f"✗ {error}", fg="red", err=True)
@@ -65,7 +65,7 @@ def doctor(subskill: str | None, json_output: bool):
 @click.option("--root", type=click.Path(exists=True, file_okay=False, path_type=Path), default=".", help="Mahu repo root.")
 @click.option("--json-output", is_flag=True, default=False, help="Output structured JSON.")
 def enable(agent: str, target: Path, root: Path, json_output: bool):
-    """Enable Mahu into a local agent workspace."""
+    """Install Mahu into a local agent workspace."""
     try:
         report = validate_manifest(root)
         if not report.valid:
@@ -77,7 +77,7 @@ def enable(agent: str, target: Path, root: Path, json_output: bool):
     if json_output:
         click.echo(json.dumps(result.to_dict(), indent=2, ensure_ascii=False))
         return
-    click.secho(f"✓ Mahu enabled for {agent}", fg="green", bold=True)
+    click.secho(f"✓ Mahu installed for {agent}", fg="green", bold=True)
     for path in result.files:
         click.echo(f"  {path}")
 

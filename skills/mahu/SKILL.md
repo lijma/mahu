@@ -1,6 +1,6 @@
 ---
 name: mahu
-description: Coordinate daily AI work through Mahu, an agent skill package for context management, prototypes, presentations, tests, feedback loops, and growth work. Use when the user invokes /mahu or asks for help coordinating fcontext, fdesign, fppt, floop-client, or testboat workflows.
+description: Coordinate daily AI work through the /mahu entrypoint for context management, prototypes, presentations, tests, feedback loops, and growth work. Use when the user invokes /mahu or asks for help coordinating fcontext, fdesign, fppt, floop-client, or testboat workflows.
 ---
 
 # Mahu
@@ -46,11 +46,16 @@ After Mahu is available, enable it for the active agent workspace when the
 user wants persistent `/mahu` usage:
 
 ```bash
+mahu enable claude --target .
 mahu enable codex --target .
 mahu enable opencode --target .
 mahu enable copilot --target .
+mahu enable trae --target .
 mahu enable workbuddy --target .
 ```
+
+Claude Code uses its plugin layout at `.claude/plugins/mahu/`. Codex, OpenCode,
+Copilot, Trae, and WorkBuddy use agent-specific skill/instruction bundles.
 
 Pick only the matching agent. If the active agent is unknown, continue from this
 `SKILL.md` without enabling an agent-specific directory.

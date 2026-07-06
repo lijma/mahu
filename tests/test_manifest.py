@@ -10,6 +10,7 @@ def test_validate_manifest_success():
     data = report.to_dict()
     assert data["valid"] is True
     assert data["kind"] == "package"
+    assert ".claude-plugin/plugin.json" in data["files"]
     assert "skills/mahu/SKILL.md" in data["files"]
     assert "skills/mahu/skills/review.md" in data["files"]
     assert resolve_skill_root(Path.cwd()) == Path.cwd() / "skills" / "mahu"
@@ -45,7 +46,7 @@ def test_validate_skill_frontmatter_errors(tmp_path):
         (tmp_path / directory).mkdir()
     for relative in ["context", "prototype", "presentation", "review", "test"]:
         (tmp_path / "skills" / f"{relative}.md").write_text("ok", encoding="utf-8")
-    for relative in ["codex", "workbuddy", "copilot", "opencode"]:
+    for relative in ["codex", "claude", "workbuddy", "copilot", "opencode", "trae"]:
         (tmp_path / "adapters" / f"{relative}.md").write_text("ok", encoding="utf-8")
     (tmp_path / "assets" / "mahu.png").write_text("ok", encoding="utf-8")
 

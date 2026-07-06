@@ -1,7 +1,7 @@
 {
   "name": "mahu",
   "version": "0.1.0",
-  "description": "Agent skill package for context, prototypes, presentations, tests, feedback loops, and growth.",
+  "description": "Claude Code plugin for invoking Mahu with /mahu across context, prototype, presentation, test, feedback, and growth workflows.",
   "skills": [
     {
       "name": "mahu",

@@ -1,4 +1,4 @@
-"""Enable Mahu skill files into agent-specific local directories."""
+"""Install Mahu into agent-specific local directories."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from pathlib import Path
 from mahu.manifest import resolve_skill_root
 
 
-SUPPORTED_AGENTS = ("codex", "workbuddy", "copilot", "opencode")
+SUPPORTED_AGENTS = ("codex", "claude", "workbuddy", "copilot", "opencode", "trae")
 MARKER_START = "<!-- mahu:skill -->"
 MARKER_END = "<!-- /mahu:skill -->"
 
@@ -29,17 +29,23 @@ class EnableResult:
 
 
 def enable_agent(repo_root: Path, target: Path, agent: str) -> EnableResult:
-    """Enable Mahu into a target project for an agent."""
+    """Install Mahu into a target project for an agent."""
     normalized = agent.lower()
     if normalized not in SUPPORTED_AGENTS:
         raise ValueError(f"Unsupported agent: {agent}")
-    source = resolve_skill_root(repo_root)
-    destination_root = _agent_skill_dir(target.resolve(), normalized)
-    created = _copy_skill_bundle(source, destination_root)
+    if normalized == "claude":
+        created = _install_claude_plugin(repo_root.resolve(), target.resolve())
+    else:
+        source = resolve_skill_root(repo_root)
+        destination_root = _agent_skill_dir(target.resolve(), normalized)
+        created = _copy_skill_bundle(source, destination_root)
     if normalized == "copilot":
         created += (_write_copilot_instruction(target.resolve()),)
     if normalized == "opencode":
         created += (_write_agents_md(target.resolve()),)
+        created += (_write_opencode_command(target.resolve()),)
+    if normalized == "trae":
+        created += (_write_trae_rule(target.resolve()),)
     return EnableResult(normalized, target.resolve(), tuple(created))
 
 
@@ -52,7 +58,27 @@ def _agent_skill_dir(target: Path, agent: str) -> Path:
         return target / ".github" / "skills" / "mahu"
     if agent == "opencode":
         return target / ".opencode" / "skills" / "mahu"
+    if agent == "trae":
+        return target / ".trae" / "skills" / "mahu"
     raise ValueError(f"Unsupported agent: {agent}")  # pragma: no cover - guarded by enable_agent
+
+
+def _install_claude_plugin(repo_root: Path, target: Path) -> tuple[Path, ...]:
+    plugin_root = target / ".claude" / "plugins" / "mahu"
+    plugin_root.mkdir(parents=True, exist_ok=True)
+    created: list[Path] = []
+
+    manifest_source = repo_root / ".claude-plugin" / "plugin.json"
+    if not manifest_source.is_file():
+        raise ValueError("Claude plugin install requires a Mahu package root with .claude-plugin/plugin.json.")
+    manifest_target = plugin_root / ".claude-plugin" / "plugin.json"
+    manifest_target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(manifest_source, manifest_target)
+    created.append(manifest_target)
+
+    source = resolve_skill_root(repo_root)
+    created.extend(_copy_skill_bundle(source, plugin_root / "skills" / "mahu"))
+    return tuple(created)
 
 
 def _copy_skill_bundle(source: Path, destination: Path) -> tuple[Path, ...]:
@@ -109,4 +135,40 @@ def _write_agents_md(target: Path) -> Path:
     else:
         content = section
     path.write_text(content, encoding="utf-8")
+    return path
+
+
+def _write_opencode_command(target: Path) -> Path:
+    path = target / ".opencode" / "commands" / "mahu.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "---\n"
+        "description: Route a request through Mahu's daily work SOP\n"
+        "---\n\n"
+        "The user invoked `/mahu` with this request:\n\n"
+        "$ARGUMENTS\n\n"
+        "Read `.opencode/skills/mahu/SKILL.md`, classify the request with AI judgment, "
+        "load only the needed Mahu subskill, run the required validation checks, and then "
+        "complete the user's request.\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def _write_trae_rule(target: Path) -> Path:
+    path = target / ".trae" / "rules" / "mahu" / "rule.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "---\n"
+        "name: mahu\n"
+        "description: Route /mahu requests through Mahu's daily work SOP.\n"
+        "alwaysApply: false\n"
+        "---\n\n"
+        "# Mahu\n\n"
+        "Use this rule when the user invokes `/mahu` or asks to use Mahu.\n\n"
+        "Read `.trae/skills/mahu/SKILL.md`, classify the request with AI judgment, "
+        "load only the needed Mahu subskill, run the required validation checks, and then "
+        "complete the user's request.\n",
+        encoding="utf-8",
+    )
     return path
