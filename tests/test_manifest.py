@@ -46,7 +46,7 @@ def test_validate_skill_frontmatter_errors(tmp_path):
         (tmp_path / directory).mkdir()
     for relative in ["context", "prototype", "presentation", "review", "test"]:
         (tmp_path / "skills" / f"{relative}.md").write_text("ok", encoding="utf-8")
-    for relative in ["codex", "claude", "workbuddy", "copilot", "opencode", "trae"]:
+    for relative in ["codex", "claude", "workbuddy", "copilot", "opencode", "trae", "cursor"]:
         (tmp_path / "adapters" / f"{relative}.md").write_text("ok", encoding="utf-8")
     (tmp_path / "assets" / "mahu.png").write_text("ok", encoding="utf-8")
 

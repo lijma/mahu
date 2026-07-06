@@ -9,7 +9,7 @@ from pathlib import Path
 from mahu.manifest import resolve_skill_root
 
 
-SUPPORTED_AGENTS = ("codex", "claude", "workbuddy", "copilot", "opencode", "trae")
+SUPPORTED_AGENTS = ("codex", "claude", "workbuddy", "copilot", "opencode", "trae", "cursor")
 MARKER_START = "<!-- mahu:skill -->"
 MARKER_END = "<!-- /mahu:skill -->"
 
@@ -46,6 +46,8 @@ def enable_agent(repo_root: Path, target: Path, agent: str) -> EnableResult:
         created += (_write_opencode_command(target.resolve()),)
     if normalized == "trae":
         created += (_write_trae_rule(target.resolve()),)
+    if normalized == "cursor":
+        created += (_write_cursor_rule(target.resolve()),)
     return EnableResult(normalized, target.resolve(), tuple(created))
 
 
@@ -60,6 +62,8 @@ def _agent_skill_dir(target: Path, agent: str) -> Path:
         return target / ".opencode" / "skills" / "mahu"
     if agent == "trae":
         return target / ".trae" / "skills" / "mahu"
+    if agent == "cursor":
+        return target / ".cursor" / "skills" / "mahu"
     raise ValueError(f"Unsupported agent: {agent}")  # pragma: no cover - guarded by enable_agent
 
 
@@ -78,6 +82,8 @@ def _install_claude_plugin(repo_root: Path, target: Path) -> tuple[Path, ...]:
 
     source = resolve_skill_root(repo_root)
     created.extend(_copy_skill_bundle(source, plugin_root / "skills" / "mahu"))
+    created.extend(_copy_skill_bundle(source, target / ".claude" / "skills" / "mahu"))
+    created.append(_write_claude_command(target))
     return tuple(created)
 
 
@@ -107,6 +113,24 @@ def _write_copilot_instruction(target: Path) -> Path:
         "applyTo: '**'\n"
         "---\n\n"
         "When the user invokes `/mahu`, read `.github/skills/mahu/SKILL.md` and follow its SOP.\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def _write_claude_command(target: Path) -> Path:
+    path = target / ".claude" / "commands" / "mahu.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "---\n"
+        "description: Route a request through Mahu's daily work SOP\n"
+        "argument-hint: <request>\n"
+        "---\n\n"
+        "The user invoked `/mahu` with this request:\n\n"
+        "$ARGUMENTS\n\n"
+        "Read `.claude/skills/mahu/SKILL.md`, classify the request with AI judgment, "
+        "load only the needed Mahu subskill, run the required validation checks, and then "
+        "complete the user's request.\n",
         encoding="utf-8",
     )
     return path
@@ -167,6 +191,25 @@ def _write_trae_rule(target: Path) -> Path:
         "# Mahu\n\n"
         "Use this rule when the user invokes `/mahu` or asks to use Mahu.\n\n"
         "Read `.trae/skills/mahu/SKILL.md`, classify the request with AI judgment, "
+        "load only the needed Mahu subskill, run the required validation checks, and then "
+        "complete the user's request.\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def _write_cursor_rule(target: Path) -> Path:
+    path = target / ".cursor" / "rules" / "mahu.mdc"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "---\n"
+        "description: Route /mahu requests through Mahu's daily work SOP.\n"
+        "globs: *\n"
+        "alwaysApply: false\n"
+        "---\n\n"
+        "# Mahu\n\n"
+        "Use this rule when the user invokes `/mahu` or asks to use Mahu.\n\n"
+        "Read `.cursor/skills/mahu/SKILL.md`, classify the request with AI judgment, "
         "load only the needed Mahu subskill, run the required validation checks, and then "
         "complete the user's request.\n",
         encoding="utf-8",

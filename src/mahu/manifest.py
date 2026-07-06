@@ -8,7 +8,7 @@ from pathlib import Path
 from mahu.registry import list_subskills
 
 
-REQUIRED_ADAPTERS = ("codex", "claude", "workbuddy", "copilot", "opencode", "trae")
+REQUIRED_ADAPTERS = ("codex", "claude", "workbuddy", "copilot", "opencode", "trae", "cursor")
 CANONICAL_SKILL_PATH = Path("skills") / "mahu"
 
 

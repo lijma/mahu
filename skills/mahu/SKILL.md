@@ -50,12 +50,14 @@ mahu enable claude --target .
 mahu enable codex --target .
 mahu enable opencode --target .
 mahu enable copilot --target .
+mahu enable cursor --target .
 mahu enable trae --target .
 mahu enable workbuddy --target .
 ```
 
-Claude Code uses its plugin layout at `.claude/plugins/mahu/`. Codex, OpenCode,
-Copilot, Trae, and WorkBuddy use agent-specific skill/instruction bundles.
+Claude Code uses `.claude/commands/mahu.md` for `/mahu` plus `.claude/skills/mahu/`
+for skill loading. Codex, Cursor, OpenCode, Copilot, Trae, and WorkBuddy use
+agent-specific skill/instruction bundles.
 
 Pick only the matching agent. If the active agent is unknown, continue from this
 `SKILL.md` without enabling an agent-specific directory.

@@ -10,9 +10,9 @@ Bring me into your daily workflow.
 ```
 
 Mahu is not a single builder and not another chat persona. It is a cross-agent
-`/mahu` entrypoint that helps Codex, Claude Code, OpenCode, Copilot, Trae,
-WorkBuddy, and future agents work through the right SOP instead of improvising
-every time.
+`/mahu` entrypoint that helps Codex, Claude Code, Cursor, OpenCode, Copilot,
+Trae, WorkBuddy, and future agents work through the right SOP instead of
+improvising every time.
 
 Use `/mahu` when daily work needs structure: capture context, build a prototype,
 create a presentation, test the result, publish it for feedback, or turn the
@@ -53,8 +53,8 @@ Mahu adapter for the current environment, then invoke Mahu with `/mahu`.
 ## Install
 
 Most users should use the Quick Start above. Mahu includes adapters for Codex,
-Claude Code, OpenCode, GitHub Copilot, Trae, and WorkBuddy, so the agent can
-choose the correct install shape after reading this repository.
+Claude Code, Cursor, OpenCode, GitHub Copilot, Trae, and WorkBuddy, so the agent
+can choose the correct install shape after reading this repository.
 
 If you want to be explicit, say:
 
@@ -110,6 +110,7 @@ Install Mahu into a specific agent workspace:
 mahu enable claude --target .
 mahu enable codex --target .
 mahu enable copilot --target .
+mahu enable cursor --target .
 mahu enable opencode --target .
 mahu enable trae --target .
 mahu enable workbuddy --target .
@@ -119,8 +120,9 @@ What `mahu enable` writes:
 
 | Agent | Files created |
 | --- | --- |
-| Claude Code | `.claude/plugins/mahu/` with `.claude-plugin/plugin.json` and bundled `skills/mahu/` |
+| Claude Code | `.claude/plugins/mahu/`, `.claude/skills/mahu/`, and `.claude/commands/mahu.md` |
 | Codex | `.codex/skills/mahu/` |
+| Cursor | `.cursor/skills/mahu/` and `.cursor/rules/mahu.mdc` |
 | GitHub Copilot | `.github/skills/mahu/` and `.github/instructions/mahu.instructions.md` |
 | OpenCode | `.opencode/skills/mahu/`, `.opencode/commands/mahu.md`, and a Mahu section in `AGENTS.md` |
 | Trae | `.trae/skills/mahu/` and `.trae/rules/mahu/rule.md` |

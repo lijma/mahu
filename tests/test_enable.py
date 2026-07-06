@@ -12,6 +12,7 @@ def test_enable_agent_skill_bundles(tmp_path):
         "claude": tmp_path / "claude" / ".claude" / "plugins" / "mahu" / "skills" / "mahu" / "SKILL.md",
         "workbuddy": tmp_path / "workbuddy" / ".workbuddy" / "skills" / "mahu" / "SKILL.md",
         "copilot": tmp_path / "copilot" / ".github" / "skills" / "mahu" / "SKILL.md",
+        "cursor": tmp_path / "cursor" / ".cursor" / "skills" / "mahu" / "SKILL.md",
         "opencode": tmp_path / "opencode" / ".opencode" / "skills" / "mahu" / "SKILL.md",
         "trae": tmp_path / "trae" / ".trae" / "skills" / "mahu" / "SKILL.md",
     }
@@ -24,6 +25,7 @@ def test_enable_agent_skill_bundles(tmp_path):
         assert (skill_path.parent / "assets" / "mahu.png").is_file()
         assert result.to_dict()["agent"] == agent
     assert (tmp_path / "opencode" / ".opencode" / "commands" / "mahu.md").is_file()
+    assert (tmp_path / "cursor" / ".cursor" / "rules" / "mahu.mdc").is_file()
     assert (tmp_path / "trae" / ".trae" / "rules" / "mahu" / "rule.md").is_file()
 
 
@@ -33,6 +35,10 @@ def test_enable_agent_specific_files_and_marker_replacement(tmp_path):
     enable_agent(repo, claude_target, "claude")
     assert (claude_target / ".claude" / "plugins" / "mahu" / ".claude-plugin" / "plugin.json").is_file()
     assert (claude_target / ".claude" / "plugins" / "mahu" / "skills" / "mahu" / "adapters" / "claude.md").is_file()
+    assert (claude_target / ".claude" / "skills" / "mahu" / "SKILL.md").is_file()
+    claude_command = claude_target / ".claude" / "commands" / "mahu.md"
+    assert claude_command.is_file()
+    assert "$ARGUMENTS" in claude_command.read_text(encoding="utf-8")
 
     copilot_target = tmp_path / "copilot"
     enable_agent(repo, copilot_target, "copilot")
@@ -79,6 +85,14 @@ def test_enable_agent_specific_files_and_marker_replacement(tmp_path):
     rule_content = rule.read_text(encoding="utf-8")
     assert "/mahu" in rule_content
     assert ".trae/skills/mahu/SKILL.md" in rule_content
+
+    cursor_target = tmp_path / "cursor"
+    enable_agent(repo, cursor_target, "cursor")
+    cursor_rule = cursor_target / ".cursor" / "rules" / "mahu.mdc"
+    assert cursor_rule.is_file()
+    cursor_rule_content = cursor_rule.read_text(encoding="utf-8")
+    assert "/mahu" in cursor_rule_content
+    assert ".cursor/skills/mahu/SKILL.md" in cursor_rule_content
 
 
 def test_enable_rejects_unknown_agent(tmp_path):
