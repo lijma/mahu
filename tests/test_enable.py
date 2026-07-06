@@ -19,6 +19,7 @@ def test_enable_agent_skill_bundles(tmp_path):
         assert result.agent == agent
         assert skill_path.is_file()
         assert (skill_path.parent / "skills" / "review.md").is_file()
+        assert (skill_path.parent / "assets" / "mahu.png").is_file()
         assert result.to_dict()["agent"] == agent
 
 
@@ -29,6 +30,10 @@ def test_enable_agent_specific_files_and_marker_replacement(tmp_path):
     assert (copilot_target / ".github" / "instructions" / "mahu.instructions.md").is_file()
     enable_agent(repo, copilot_target, "copilot")
     assert (copilot_target / ".github" / "skills" / "mahu" / "skills" / "context.md").is_file()
+
+    skill_root_target = tmp_path / "skill-root"
+    enable_agent(repo / "skills" / "mahu", skill_root_target, "codex")
+    assert (skill_root_target / ".codex" / "skills" / "mahu" / "SKILL.md").is_file()
 
     opencode_target = tmp_path / "opencode"
     agents_md = opencode_target / "AGENTS.md"

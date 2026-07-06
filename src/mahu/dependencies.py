@@ -7,7 +7,7 @@ import subprocess
 from dataclasses import dataclass
 from typing import Callable
 
-from mahu.router import get_subskill, list_subskills
+from mahu.registry import get_subskill, list_subskills
 
 
 @dataclass(frozen=True)
@@ -105,4 +105,3 @@ def _read_version(command: str, runner: Callable[..., subprocess.CompletedProces
         return None
     output = (result.stdout or result.stderr or "").strip()
     return output.splitlines()[0] if output else None
-

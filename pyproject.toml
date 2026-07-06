@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "mahu"
 dynamic = ["version"]
-description = "Agent skill router for context, prototypes, presentations, tests, and feedback loops"
+description = "Agent skill package for context, prototypes, presentations, tests, feedback loops, and growth"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
@@ -27,4 +27,3 @@ where = ["src"]
 
 [tool.setuptools_scm]
 version_scheme = "no-guess-dev"
-

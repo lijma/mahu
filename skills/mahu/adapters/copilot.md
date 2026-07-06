@@ -7,6 +7,5 @@ Recommended enable target:
 .github/instructions/mahu.instructions.md
 ```
 
-Copilot should keep Mahu's router instruction always available and load
-subskill files only when the user's request matches that domain.
-
+Copilot should keep Mahu's SOP instruction available and load subskill files
+only when the user's request matches that domain.

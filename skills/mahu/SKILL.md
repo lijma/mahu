@@ -5,9 +5,10 @@ description: Coordinate daily AI work through Mahu, an agent skill package for c
 
 # Mahu
 
-Mahu is an unpaid AI work buddy:
+Mahu is a free AI work buddy:
 
-> I am Mahu, good at context management, prototype, test, feedback, growth. Hire me in your daily work without pay.
+> I'm Mahu, your free AI work buddy for context, prototypes, tests, feedback, and growth.
+> Bring me into your daily workflow.
 
 Mahu does not replace domain skills. Mahu helps the agent pick the right
 SOP, check the local toolchain, and keep the loop honest.
@@ -27,11 +28,18 @@ Mahu CLI checks:
 pip install mahu
 ```
 
-If the user provided a GitHub repository instead of a package, install from that
-repository:
+If the user provided the GitHub repository instead of a package, install the CLI
+from that repository:
 
 ```bash
-pip install git+<mahu-repo-url>
+pip install git+https://github.com/lijma/mahu.git
+```
+
+For Codex-style skill installers, install the skill from the repository
+subdirectory:
+
+```bash
+install-skill-from-github.py --repo lijma/mahu --path skills/mahu --name mahu
 ```
 
 After Mahu is available, enable it for the active agent workspace when the
@@ -94,5 +102,5 @@ If a request has multiple intents, plan a sequence. Example:
 - Do not use fppt for prototypes.
 - Do not use fdesign for decks.
 - Do not skip validation/check steps owned by the selected subskill.
-- If unsure, ask one concise clarifying question or route to `skills/context.md`
+- If unsure, ask one concise clarifying question or load `skills/context.md`
   to capture ambiguity first.

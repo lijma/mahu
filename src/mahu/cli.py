@@ -11,33 +11,12 @@ from mahu import __version__
 from mahu.dependencies import check_all_dependencies, check_dependency
 from mahu.enable import SUPPORTED_AGENTS, enable_agent
 from mahu.manifest import validate_manifest
-from mahu.router import route_request
 
 
 @click.group()
 @click.version_option(__version__, prog_name="mahu")
 def main():
-    """Mahu — agent skill router for daily AI work."""
-
-
-@main.command()
-@click.argument("request", nargs=-1, required=True)
-@click.option("--json-output", is_flag=True, default=False, help="Output structured JSON.")
-def route(request: tuple[str, ...], json_output: bool):
-    """Route a request to Mahu subskills."""
-    text = " ".join(request)
-    try:
-        result = route_request(text)
-    except ValueError as exc:
-        click.secho(f"✗ {exc}", fg="red", err=True)
-        raise SystemExit(1) from exc
-    if json_output:
-        click.echo(json.dumps(result.to_dict(), indent=2, ensure_ascii=False))
-        return
-    click.secho(f"primary: {result.primary}", fg="green", bold=True)
-    click.echo(f"sequence: {' -> '.join(result.sequence)}")
-    click.echo(f"load: {', '.join(result.references)}")
-    click.echo(f"reason: {result.reason}")
+    """Mahu — agent skill package for daily AI work."""
 
 
 @main.command()

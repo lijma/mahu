@@ -6,6 +6,8 @@ import shutil
 from dataclasses import dataclass
 from pathlib import Path
 
+from mahu.manifest import resolve_skill_root
+
 
 SUPPORTED_AGENTS = ("codex", "workbuddy", "copilot", "opencode")
 MARKER_START = "<!-- mahu:skill -->"
@@ -31,7 +33,7 @@ def enable_agent(repo_root: Path, target: Path, agent: str) -> EnableResult:
     normalized = agent.lower()
     if normalized not in SUPPORTED_AGENTS:
         raise ValueError(f"Unsupported agent: {agent}")
-    source = repo_root.resolve()
+    source = resolve_skill_root(repo_root)
     destination_root = _agent_skill_dir(target.resolve(), normalized)
     created = _copy_skill_bundle(source, destination_root)
     if normalized == "copilot":
@@ -60,7 +62,7 @@ def _copy_skill_bundle(source: Path, destination: Path) -> tuple[Path, ...]:
         target = destination / filename
         shutil.copyfile(source / filename, target)
         created.append(target)
-    for directory in ("skills", "adapters"):
+    for directory in ("skills", "adapters", "assets"):
         source_dir = source / directory
         target_dir = destination / directory
         if target_dir.exists():
@@ -75,10 +77,10 @@ def _write_copilot_instruction(target: Path) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
         "---\n"
-        "description: 'Use Mahu as the router for context, prototype, presentation, review, and test work.'\n"
+        "description: 'Use Mahu for context, prototype, presentation, review, and test work.'\n"
         "applyTo: '**'\n"
         "---\n\n"
-        "When the user invokes `/mahu`, read `.github/skills/mahu/SKILL.md` and follow its routing SOP.\n",
+        "When the user invokes `/mahu`, read `.github/skills/mahu/SKILL.md` and follow its SOP.\n",
         encoding="utf-8",
     )
     return path
@@ -90,7 +92,7 @@ def _write_agents_md(target: Path) -> Path:
         f"{MARKER_START}\n"
         "## Mahu\n\n"
         "Use Mahu for `/mahu` requests. Read `.opencode/skills/mahu/SKILL.md`, "
-        "classify the request, and load only the needed `skills/*.md` reference.\n"
+        "choose the right subskill, and load only the needed `skills/*.md` reference.\n"
         f"{MARKER_END}\n"
     )
     if path.exists():

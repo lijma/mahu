@@ -1,7 +1,7 @@
 # Mahu
 
 <p align="center">
-  <img src="mahu.png" alt="Mahu" width="320">
+  <img src="skills/mahu/assets/mahu.png" alt="Mahu" width="320">
 </p>
 
 ```text
@@ -35,21 +35,36 @@ agent the GitHub repo link and ask it to use Mahu.
 
 The agent should:
 
-1. Read top-level `SKILL.md`.
-2. Classify the request.
-3. Load only the referenced file under `skills/` that matches the request.
-4. Follow that subskill SOP.
+1. Install the skill from `skills/mahu`.
+2. Read `skills/mahu/SKILL.md`.
+3. Classify the request with AI judgment.
+4. Load only the referenced file under `skills/mahu/skills/` that matches the request.
+5. Follow that subskill SOP.
+
+For Codex-style skill installers, use:
+
+```bash
+install-skill-from-github.py --repo lijma/mahu --path skills/mahu --name mahu
+```
 
 ## Local CLI
 
+Install the CLI:
+
 ```bash
-mahu route "make a product prototype and upload for review"
-mahu doctor --subskill prototype
+pip install mahu
+```
+
+The CLI provides deterministic checks and enablement. The skill itself lives in
+`skills/mahu`.
+
+```bash
 mahu validate
+mahu doctor --subskill prototype
 mahu enable opencode --target .
 ```
 
-Each Mahu subskill declares its own dependency. Before executing a routed
+Each Mahu subskill declares its own dependency. Before executing a selected
 subskill, run `mahu doctor --subskill <name>` or check the required CLI
 directly.
 

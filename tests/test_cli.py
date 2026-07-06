@@ -10,14 +10,8 @@ def test_cli_help_and_route():
     runner = CliRunner()
     result = runner.invoke(main, ["--help"], catch_exceptions=False)
     assert result.exit_code == 0
-    assert "agent skill router" in result.output
-
-    result = runner.invoke(main, ["route", "create", "slides", "for", "a", "talk"], catch_exceptions=False)
-    assert result.exit_code == 0
-    assert "primary: presentation" in result.output
-
-    result = runner.invoke(main, ["route", "run tests", "--json-output"], catch_exceptions=False)
-    assert json.loads(result.output)["primary"] == "test"
+    assert "agent skill package" in result.output
+    assert "route" not in result.output
 
 
 def test_cli_validate_success_and_failure(tmp_path):
@@ -108,10 +102,3 @@ def test_cli_enable_success_and_failure(tmp_path):
     )
     assert result.exit_code == 1
     assert "Missing required file" in result.output
-
-
-def test_cli_route_empty_error():
-    runner = CliRunner()
-    result = runner.invoke(main, ["route", ""], catch_exceptions=False)
-    assert result.exit_code == 1
-    assert "empty" in result.output
